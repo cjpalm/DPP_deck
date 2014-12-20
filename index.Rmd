@@ -1,0 +1,65 @@
+---
+title       : DDP Project - Predicting Iris Species
+subtitle    : Simple Shiny App to explore a Machine Learning Predictor
+author      : C Palm
+job         : Data Scientist
+framework   : io2012 # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : github      #
+widgets     : [bootstrap]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+#<style>
+#.title-slide {
+ #    background-image: url(http://cjpalm.github.io/DDP_project/images/screenShot.jpg);
+#   }
+#</style>
+
+
+
+### Predicting Iris Species
+
+* Machine Learning Algorithm to predict Iris Species
+* Interactive - use to predict Iris Species based on Iris measurement
+*    Or explore which factors are important to model prediction
+*  Wrapped in a Shiny App for easy use
+
+--- .class #id
+### Data - Iris data from R datasets
+```{r table, results='asis'}
+library(xtable)
+options(xtable.type='html')
+data(iris)
+xtable(summary(iris))
+```
+Data Source:
+Fisher, R. A. (1936) The use of multiple measurements in taxonomic problems. Annals of Eugenics, 7, Part II, 179â~@~S188.
+Anderson, Edgar (1935). The irises of the Gaspe Peninsula, Bulletin of the American Iris Society, 59, 2â~@~S5.
+
+--- .class #id
+
+## How it works
+
+* Used Random Forest algorithm - Split data into training test sets, evaluated model and use model to predict Iris type from input in Shiny App.
+Here is the code used, Results of model applied to test data are shown:
+```{r}
+library(caret); data(iris); set.seed(1231); 
+inTrain <- createDataPartition(y=iris$Species,p=0.60,list=FALSE); train <- iris[inTrain,]; 
+test <- iris[-inTrain,]; modFit <- train(Species~.,data=train,method="rf",verbose=FALSE); 
+varImport<-varImp(modFit); confusionMatrix(predict(modFit,test),test$Species)$table
+```
+* Only two of the factors are important, but left all four in the model, So users can explore the effect of each factor on the prediction.
+
+
+
+--- .class #id
+
+## Try It Out!
+
+1. Predict Iris Species based on measurements you collect
+2. Investigate which factors are important for prediction
+
+https://cpalm-ds.shinyapps.io/DDP_project/
+![Alt text](assets/img/screenShot.jpg)
